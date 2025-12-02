@@ -1,128 +1,141 @@
 # 📚 BookStore API
 
-Uma API RESTful desenvolvida com Spring Boot para gerenciar empréstimos de livros em bibliotecas online ou presenciais. Permite operações com livros, autores, clientes e pedidos. O projeto é modularizado por domínio e inclui autenticação com JWT, OAuth2 com Google, múltiplas camadas (controller, service, repository, validation, DTO, model...) e documentação com Swagger.
+A RESTful API developed with Spring Boot to manage book loans in online or physical libraries. It allows operations with books, authors, clients, and orders. The project is domain-modularized and includes authentication with JWT, OAuth2 with Google, multiple layers (controller, service, repository, validation, DTO, model...) and documentation with Swagger.
 
-## 🚀 Tecnologias Utilizadas
+---
+
+## 🚀 Technologies Used
 - Java 21
 - Spring Boot
   - Spring Web
   - Spring Data JPA
-  - Spring Security (JWT e OAuth2 com Google)
+  - Spring Security (JWT and OAuth2 with Google)
 - PostgreSQL
 - Docker
 - Swagger (Springdoc OpenAPI)
 - Lombok
 - MapStruct
 
-## 🏗️ Arquitetura
+---
 
-A API segue uma **arquitetura em camadas**, com os pacotes organizados por tipo de responsabilidade. Os domínios (`book`, `author`, `client`, `order`) estão distribuídos dentro dessas camadas, o que facilita a manutenção, escalabilidade e reutilização de componentes.
+## 🏗️ Architecture
 
-**Estrutura dos pacotes:**
+The API follows a **layered architecture**, with packages organized by type of responsibility. The domains (`book`, `author`, `client`, `order`) are distributed within these layers, which facilitates maintenance, scalability, and component reuse.
 
-- `model` — Representações das entidades (livros, autores, clientes, pedidos)
-- `dto` — Objetos de transferência de dados para entrada e saída
-- `mapper` — Mapeamento entre entidades e DTOs com MapStruct
-- `controller` — Manipulação das requisições HTTP
-- `service` — Lógica de negócio centralizada
-- `repository` — Acesso ao banco de dados com Spring Data JPA
-- `validator` — Validações auxiliares e regras específicas
-- `security` — Autenticação e autorização com JWT e OAuth2
-- `exception` — Tratamento global de erros com `@ControllerAdvice`
-- `config`, `docs`, `util`, `common` — Suporte geral e configurações da aplicação
+**Package structure:**
 
-Essa organização permite que cada camada tenha uma função bem definida, mantendo o código limpo, modular e alinhado com os princípios da arquitetura limpa.
+- `model` — Entity representations (books, authors, clients, orders)
+- `dto` — Data transfer objects for input and output
+- `mapper` — Mapping between entities and DTOs with MapStruct
+- `controller` — HTTP request handling
+- `service` — Centralized business logic
+- `repository` — Database access with Spring Data JPA
+- `validator` — Auxiliary validations and specific rules
+- `security` — Authentication and authorization with JWT and OAuth2
+- `exception` — Global error handling with `@ControllerAdvice`
+- `config`, `docs`, `util`, `common` — General support and application configurations
 
-## 🔐 Segurança
+This organization ensures each layer has a well-defined role, keeping the code clean, modular, and aligned with clean architecture principles.
 
-A autenticação é feita com JWT (JSON Web Token):
+---
 
-- Endpoints públicos:
+## 🔐 Security
+
+Authentication is done with JWT (JSON Web Token):
+
+- Public endpoints:
   - `POST /auth/login`
   - `POST /client`
-- Os demais endpoints exigem o token JWT no cabeçalho:
+- All other endpoints require the JWT token in the header.
 
+---
 
-## 📌 Endpoints Disponíveis
+## 📌 Available Endpoints
 
-- **Pedidos**
-- `POST /orders{id}/return` → devolve um livro emprestado
-- `POST /orders` → cria um novo pedido
-- `GET /orders` → busca todos os pedidos com filtros
-- `GET /orders/{id}` → busca pedido por ID
-- `PUT /orders/{id}` → atualiza pedido por ID
-- `DELETE /orders/{id}` → exclui pedido por ID
+- **Orders**
+  - `POST /orders{id}/return` → return a borrowed book
+  - `POST /orders` → create a new order
+  - `GET /orders` → fetch all orders with filters
+  - `GET /orders/{id}` → fetch order by ID
+  - `PUT /orders/{id}` → update order by ID
+  - `DELETE /orders/{id}` → delete order by ID
 
-- **Autores**
-- `POST /authors` → cria um novo autor
-- `GET /authors` → busca todos os autores com filtros
-- `GET /authors/{id}` → busca autor por ID
-- `PUT /authors/{id}` → atualiza autor por ID
-- `DELETE /authors/{id}` → exclui autor por ID
+- **Authors**
+  - `POST /authors` → create a new author
+  - `GET /authors` → fetch all authors with filters
+  - `GET /authors/{id}` → fetch author by ID
+  - `PUT /authors/{id}` → update author by ID
+  - `DELETE /authors/{id}` → delete author by ID
 
-- **Livros**
-- `POST /books` → cria um novo livro
-- `GET /books` → busca todos os livros com filtros
-- `GET /books/{id}` → busca livro por ID
-- `PUT /books/{id}` → atualiza livro por ID
-- `DELETE /books/{id}` → exclui livro por ID
+- **Books**
+  - `POST /books` → create a new book
+  - `GET /books` → fetch all books with filters
+  - `GET /books/{id}` → fetch book by ID
+  - `PUT /books/{id}` → update book by ID
+  - `DELETE /books/{id}` → delete book by ID
 
-- **Clientes**
-- `POST /clients` → cria um novo cliente
-- `GET /client` → busca todos os clientes com filtros
-- `GET /client/{id}` → busca cliente por ID
-- `PUT /client/{id}` → atualiza cliente por ID
-- `DELETE /client/{id}` → exclui cliente por ID
+- **Clients**
+  - `POST /clients` → create a new client
+  - `GET /client` → fetch all clients with filters
+  - `GET /client/{id}` → fetch client by ID
+  - `PUT /client/{id}` → update client by ID
+  - `DELETE /client/{id}` → delete client by ID
 
-As permissões são gerenciadas com `@PreAuthorize` e filtros do Spring Security.
+Permissions are managed with `@PreAuthorize` and Spring Security filters.
 
-## 🌐 Autenticação OAuth2 com Google
+---
 
-A API permite login com contas do Google:
+## 🌐 OAuth2 Authentication with Google
+
+The API allows login with Google accounts:
 
 - Endpoint:
-- `/oauth2/authorization/google`
-- Após a autenticação, o JWT é gerado automaticamente.
-- Configuração via `application.yml`:
+  - `/oauth2/authorization/google`
+- After authentication, the JWT is automatically generated.
+- Configuration via `application.yml`:
 
 ```yaml
 client-id: ${CLIENT_ID}
 client-secret: ${CLIENT_SECRET}
 ```
 
+---
 
 ## 📌 API Documentation
-
-Documentação disponível após iniciar a aplicação:
+Documentation available after starting the application:
 
 👉 http://localhost:8081/swagger-ui/index.html#/
 
-## 📁 Log
+---
 
-Os logs são registrados no arquivo `bookstore.log`, conforme configurado em `application.yml`.
+## 📁 Log
+Logs are recorded in the `bookstore.log` file, as configured in `application.yml`.
 
 ---
 
-## ▶️ Como Rodar
+## ▶️ How to Run
 
-### ✅ Pré-requisitos
-- Java 21
-- Maven
-- Docker (for PostgreSQL database)
-- Configured Google OAuth2 account
+### ✅ Prerequisites
+- Java 21  
+- Maven  
+- Docker (for PostgreSQL database)  
+- Configured Google OAuth2 account  
 
-### 📦 Inicie o PostgreSQL com o Docker (opcional)
+---
+
+### 📦 Start PostgreSQL with Docker (optional)
 ```bash
-docker run --name postgres-bookstore -e POSTGRES_PASSWORD=senha -p 5432:5432 -d postgres
+docker run --name postgres-bookstore -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
 ```
 
-### 🧪 Configure `application.yml`
-```yaml
+###🧪 Configure application.yml
+```
+yaml
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bookstore
     username: postgres
-    password: senha
+    password: password
   security:
     oauth2:
       client:
@@ -132,25 +145,12 @@ spring:
             client-secret: ${CLIENT_SECRET}
 ```
 
-### 1. Clone o repositório
-```bash
+### 1. Clone the repository
 git clone https://github.com/CaiquePirs/bookstore.git
-```
+2. Configure application.yml (see above)
+3. Run the application
+bash
+```./mvnw spring-boot:run```
 
-### 2. Configurar `application.yml` (veja acima)
-
-### 3. Rode a applicação
-```bash
-./mvnw spring-boot:run
-```
-
----
-
-## 👨‍💻 Author
-
-BookStore API foi desenvolvido por mim **Caique Pires**. Contribuições são bem vindas!
-
-## 📧 Contact
-
-[![Gmail](https://img.shields.io/badge/Email-Gmail-red?style=flat&logo=gmail)](mailto:pirescaiq@gmail.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-LinkedIn-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/caique-pires-8843aa332)
+### 👨‍💻 Author
+BookStore API was developed by Caique Pires. Contributions are welcome!
